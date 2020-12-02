@@ -1,7 +1,6 @@
 import React from 'react';
 import { Table } from 'antd';
-import {PageContainer} from '@ant-design/pro-layout'
-
+import { PageContainer } from '@ant-design/pro-layout';
 
 const columns: any[] = [
   {
@@ -80,7 +79,15 @@ for (let i = 0; i < 100; i++) {
   });
 }
 export default () => {
-  return (<PageContainer>
-    <Table columns={columns} dataSource={data} scroll={{ x: 1500 }} sticky={{offsetHeader:100}} />
-  </PageContainer>);
+  return (
+    <PageContainer>
+      <Table
+        columns={columns}
+        dataSource={data}
+        scroll={{ x: 1500 }}
+        pagination={{ pageSize: 100 }}
+        sticky
+      />
+    </PageContainer>
+  );
 };
