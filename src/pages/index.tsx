@@ -1,5 +1,5 @@
-import React from 'react';
-import { Table } from 'antd';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Table, Button } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 
 const columns: any[] = [
@@ -69,24 +69,59 @@ const columns: any[] = [
   },
 ];
 
-const data: any[] = [];
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edrward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`,
+function getList() {
+  let data: any = [];
+  const start = Math.floor(Math.random() * 10);
+  for (let i = start; i < 100; i++) {
+    data.push({
+      key: i,
+      name: `Edrward ${Math.ceil(Math.random())}`,
+      age: 32,
+      address: `London Park no. ${i}`,
+    });
+  }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(data);
+    }, 1000);
   });
 }
+
 export default () => {
+  const [list, setList] = useState<any[]>();
+  const [loading, setLoading] = useState(false);
+
+  const { loadList } = useMemo(() => {
+    const loadList = () => {
+      setLoading(true);
+      getList().then((result: any) => {
+        setList(result);
+        setLoading(false);
+      });
+    };
+
+    return { loadList };
+  }, []);
+
+  useEffect(() => {
+    loadList();
+  }, []);
+
   return (
-    <PageContainer>
+    <PageContainer
+      extra={[
+        <Button key="refresh" onClick={loadList}>
+          刷新数据
+        </Button>,
+      ]}
+    >
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={list}
         scroll={{ x: 1500 }}
         pagination={{ pageSize: 100 }}
-        sticky
+        sticky={{ offsetHeader: 48 }}
+        loading={loading}
       />
     </PageContainer>
   );
